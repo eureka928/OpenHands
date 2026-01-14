@@ -13,23 +13,26 @@ import { GetConfigResponse } from "#/api/option-service/option.types";
 
 // Helper to create mock config with sensible defaults
 const createMockConfig = (
-  overrides: Partial<GetConfigResponse> & {
+  overrides: Omit<Partial<GetConfigResponse>, "FEATURE_FLAGS"> & {
     FEATURE_FLAGS?: Partial<GetConfigResponse["FEATURE_FLAGS"]>;
   } = {},
-): GetConfigResponse => ({
-  APP_MODE: "oss",
-  GITHUB_CLIENT_ID: "test-client-id",
-  POSTHOG_CLIENT_KEY: "test-posthog-key",
-  FEATURE_FLAGS: {
-    ENABLE_BILLING: false,
-    HIDE_LLM_SETTINGS: false,
-    ENABLE_JIRA: false,
-    ENABLE_JIRA_DC: false,
-    ENABLE_LINEAR: false,
-    ...overrides.FEATURE_FLAGS,
-  },
-  ...overrides,
-});
+): GetConfigResponse => {
+  const { FEATURE_FLAGS: featureFlagOverrides, ...restOverrides } = overrides;
+  return {
+    APP_MODE: "oss",
+    GITHUB_CLIENT_ID: "test-client-id",
+    POSTHOG_CLIENT_KEY: "test-posthog-key",
+    FEATURE_FLAGS: {
+      ENABLE_BILLING: false,
+      HIDE_LLM_SETTINGS: false,
+      ENABLE_JIRA: false,
+      ENABLE_JIRA_DC: false,
+      ENABLE_LINEAR: false,
+      ...featureFlagOverrides,
+    },
+    ...restOverrides,
+  };
+};
 
 // These tests will now fail because the conversation panel is rendered through a portal
 // and technically not a child of the Sidebar component.
