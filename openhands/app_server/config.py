@@ -230,7 +230,15 @@ def config_from_env() -> AppServerConfig:
         elif os.getenv('RUNTIME') in ('local', 'process'):
             config.sandbox_spec = ProcessSandboxSpecServiceInjector()
         else:
-            config.sandbox_spec = DockerSandboxSpecServiceInjector()
+            # Parse OH_SANDBOX_PULL_IF_MISSING environment variable
+            # Default to True for backward compatibility
+            pull_if_missing_env = os.getenv('OH_SANDBOX_PULL_IF_MISSING')
+            pull_if_missing = True
+            if pull_if_missing_env is not None:
+                pull_if_missing = pull_if_missing_env.lower() in ('true', '1', 'yes')
+            config.sandbox_spec = DockerSandboxSpecServiceInjector(
+                pull_if_missing=pull_if_missing
+            )
 
     if config.app_conversation_info is None:
         config.app_conversation_info = SQLAppConversationInfoServiceInjector()

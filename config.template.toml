@@ -362,6 +362,13 @@ classpath = "my_package.my_module.MyCustomAgent"
 # [sandbox]
 # volumes = "/my/host/dir:/workspace:rw,/path2:/workspace/path2:ro"
 
+# Whether to pull Docker images if they are missing when the server starts.
+# This setting is controlled via environment variable (not TOML config).
+# Set to 'false' to disable automatic Docker image pulling on server startup.
+# Useful when images already exist locally or for offline/air-gapped deployments.
+# Default: true
+# Usage: export OH_SANDBOX_PULL_IF_MISSING=false
+
 #################################### Security ###################################
 # Configuration for security features
 ##############################################################################
